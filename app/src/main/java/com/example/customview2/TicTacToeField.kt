@@ -18,7 +18,7 @@ class TicTacToeField(
 
     private val listeners = mutableSetOf<OnFieldChangedListener>()
 
-    fun getCell(rows: Int, columns: Int): Cell {
+    private fun getCell(rows: Int, columns: Int): Cell {
         if (rows < 0 || columns < 0 || rows >= rows || columns >= columns) return Cell.EMPTY
         return cells[rows][columns]
     }
