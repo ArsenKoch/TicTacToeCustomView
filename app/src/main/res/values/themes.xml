@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.CustomView2" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
@@ -12,5 +12,20 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="TicTacToeFieldStyle">@style/GlobalTicTacToeFieldStyle</item>
+    </style>
+
+    <style name="DefaultTicTacToeFieldStyle">
+
+        <item name="playerColor1">#008800</item>
+        <item name="playerColor2">#E80F0F</item>
+        <item name="gridColor">#988F8F</item>
+
+    </style>
+
+    <style name="GlobalTicTacToeFieldStyle" parent="DefaultTicTacToeFieldStyle">
+        <item name="playerColor1">#076C9A</item>
+
     </style>
 </resources>
