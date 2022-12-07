@@ -10,13 +10,13 @@ enum class Cell {
 typealias OnFieldChangedListener = (field: TicTacToeField) -> Unit
 
 class TicTacToeField(
-    private val rows: Int,
-    private val columns: Int
+    val rows: Int,
+    val columns: Int
 ) {
 
     private val cells = Array(rows) { Array(columns) { Cell.EMPTY } }
 
-     val listeners = mutableSetOf<OnFieldChangedListener>()
+    val listeners = mutableSetOf<OnFieldChangedListener>()
 
     private fun getCell(rows: Int, columns: Int): Cell {
         if (rows < 0 || columns < 0 || rows >= rows || columns >= columns) return Cell.EMPTY
