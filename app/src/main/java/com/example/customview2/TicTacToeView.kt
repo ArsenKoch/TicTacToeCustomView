@@ -17,9 +17,11 @@ class TicTacToeView(
     private var playerColor2 by Delegates.notNull<Int>()
     private var gridColor by Delegates.notNull<Int>()
 
-    var ticTacToeField: TicTacToeField? = null
+    private var ticTacToeField: TicTacToeField? = null
         set(value) {
+            field?.listeners?.remove(listener)
             field = value
+            value?.listeners?.add(listener)
             requestLayout()
             invalidate()
         }
@@ -63,6 +65,20 @@ class TicTacToeView(
         gridColor = typedArray.getColor(R.styleable.TicTacToeView_gridColor, GRID_DEFAULT_COLOR)
 
         typedArray.recycle()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        ticTacToeField?.listeners?.add(listener)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        ticTacToeField?.listeners?.remove(listener)
+    }
+
+    private val listener: OnFieldChangedListener = {
+
     }
 
     private fun initDefaultColors() {
