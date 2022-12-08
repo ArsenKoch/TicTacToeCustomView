@@ -121,86 +121,96 @@ class TicTacToeView(
         updateViewSize()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+
         if (ticTacToeField == null) return
         if (cellSize == 0f) return
         if (fieldRect.width() <= 0) return
         if (fieldRect.height() <= 0) return
 
-        if (canvas != null) {
-            drawGrid(canvas)
-        }
-        if (canvas != null) {
-            drawCells(canvas)
-        }
-
+        drawGrid(canvas)
+        drawCells(canvas)
     }
 
     private fun drawGrid(canvas: Canvas) {
-
-    }
-
-    private fun drawCells(canvas: Canvas) {
-
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val minWidth = suggestedMinimumWidth + paddingLeft + paddingRight
-        val minHeight = suggestedMinimumHeight + paddingBottom + paddingTop
-
-        val desiredCellSizeInPixels = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            DESIRED_CELL_SIZE, resources.displayMetrics
-        ).toInt()
-
-        val rows = ticTacToeField?.rows ?: 0
-        val columns = ticTacToeField?.columns ?: 0
-
-        val desiredWidth =
-            max(minWidth, columns * desiredCellSizeInPixels + paddingRight + paddingLeft)
-        val desiredHeight =
-            max(minHeight, rows * desiredCellSizeInPixels + paddingTop + paddingBottom)
-
-        setMeasuredDimension(
-            resolveSize(desiredWidth, widthMeasureSpec),
-            resolveSize(desiredHeight, heightMeasureSpec)
-        )
-    }
-
-    private fun updateViewSize() {
         val field = this.ticTacToeField ?: return
 
-        val safeWidth = width - paddingLeft - paddingRight
-        val safeHeight = height - paddingTop - paddingBottom
+        val startX = fieldRect.left
+        val stopX = fieldRect.right
+        for (i in 0..field.rows) {
+            val y = fieldRect.top + cellSize * i
+            canvas.drawLine(startX, y, stopX, y, gridPaint)
+        }
 
-        val cellWidth = safeWidth / field.columns.toFloat()
-        val cellHeight = safeHeight / field.rows.toFloat()
-
-        cellSize = min(cellWidth, cellHeight)
-        cellPadding = cellSize * 0.2f
-
-        val fieldWidth = cellSize * field.columns
-        val fieldHeight = cellSize * field.rows
-
-        fieldRect.left = paddingLeft + (safeWidth - fieldWidth) / 2
-        fieldRect.top = paddingTop + (safeHeight - fieldHeight) / 2
-        fieldRect.bottom = fieldRect.top + fieldHeight
-        fieldRect.right = fieldRect.left + fieldWidth
+        val startY = fieldRect.top
+        val stopY = fieldRect.bottom
+        for (i in 0..field.columns) {
+            val x = fieldRect.left + cellSize * i
+            canvas.drawLine(x, startY, x, stopY, gridPaint)
+        }
     }
 
-    private fun initDefaultColors() {
-        playerColor1 = PLAYER1_DEFAULT_COLOR
-        playerColor2 = PLAYER2_DEFAULT_COLOR
-        gridColor = GRID_DEFAULT_COLOR
-    }
+        private fun drawCells(canvas: Canvas) {
 
-    companion object {
-        const val PLAYER1_DEFAULT_COLOR = Color.RED
-        const val PLAYER2_DEFAULT_COLOR = Color.BLUE
-        const val GRID_DEFAULT_COLOR = Color.GRAY
+        }
 
-        const val DESIRED_CELL_SIZE = 50f
+        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+            val minWidth = suggestedMinimumWidth + paddingLeft + paddingRight
+            val minHeight = suggestedMinimumHeight + paddingBottom + paddingTop
+
+            val desiredCellSizeInPixels = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                DESIRED_CELL_SIZE, resources.displayMetrics
+            ).toInt()
+
+            val rows = ticTacToeField?.rows ?: 0
+            val columns = ticTacToeField?.columns ?: 0
+
+            val desiredWidth =
+                max(minWidth, columns * desiredCellSizeInPixels + paddingRight + paddingLeft)
+            val desiredHeight =
+                max(minHeight, rows * desiredCellSizeInPixels + paddingTop + paddingBottom)
+
+            setMeasuredDimension(
+                resolveSize(desiredWidth, widthMeasureSpec),
+                resolveSize(desiredHeight, heightMeasureSpec)
+            )
+        }
+
+        private fun updateViewSize() {
+            val field = this.ticTacToeField ?: return
+
+            val safeWidth = width - paddingLeft - paddingRight
+            val safeHeight = height - paddingTop - paddingBottom
+
+            val cellWidth = safeWidth / field.columns.toFloat()
+            val cellHeight = safeHeight / field.rows.toFloat()
+
+            cellSize = min(cellWidth, cellHeight)
+            cellPadding = cellSize * 0.2f
+
+            val fieldWidth = cellSize * field.columns
+            val fieldHeight = cellSize * field.rows
+
+            fieldRect.left = paddingLeft + (safeWidth - fieldWidth) / 2
+            fieldRect.top = paddingTop + (safeHeight - fieldHeight) / 2
+            fieldRect.bottom = fieldRect.top + fieldHeight
+            fieldRect.right = fieldRect.left + fieldWidth
+        }
+
+        private fun initDefaultColors() {
+            playerColor1 = PLAYER1_DEFAULT_COLOR
+            playerColor2 = PLAYER2_DEFAULT_COLOR
+            gridColor = GRID_DEFAULT_COLOR
+        }
+
+        companion object {
+            const val PLAYER1_DEFAULT_COLOR = Color.RED
+            const val PLAYER2_DEFAULT_COLOR = Color.BLUE
+            const val GRID_DEFAULT_COLOR = Color.GRAY
+
+            const val DESIRED_CELL_SIZE = 50f
+        }
     }
-}
 
