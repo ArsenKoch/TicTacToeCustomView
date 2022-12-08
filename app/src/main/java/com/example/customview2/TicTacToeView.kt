@@ -1,7 +1,9 @@
 package com.example.customview2
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -24,6 +26,10 @@ class TicTacToeView(
     private var playerColor1 by Delegates.notNull<Int>()
     private var playerColor2 by Delegates.notNull<Int>()
     private var gridColor by Delegates.notNull<Int>()
+
+    private lateinit var player1Paint: Paint
+    private lateinit var player2Paint: Paint
+    private lateinit var gridPaint: Paint
 
     private var ticTacToeField: TicTacToeField? = null
         set(value) {
@@ -56,6 +62,28 @@ class TicTacToeView(
         } else {
             initDefaultColors()
         }
+        iniPaint()
+    }
+
+    private fun iniPaint() {
+        player1Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        player1Paint.color = playerColor1
+        player1Paint.style = Paint.Style.STROKE
+        player1Paint.strokeWidth =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3f, resources.displayMetrics)
+
+        player2Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        player2Paint.color = playerColor2
+        player2Paint.style = Paint.Style.STROKE
+        player2Paint.strokeWidth =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3f, resources.displayMetrics)
+
+
+        gridPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        gridPaint.color = gridColor
+        gridPaint.style = Paint.Style.STROKE
+        gridPaint.strokeWidth =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, resources.displayMetrics)
     }
 
     private fun initAttributes(attributeSet: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
@@ -91,6 +119,30 @@ class TicTacToeView(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         updateViewSize()
+    }
+
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+        if (ticTacToeField == null) return
+        if (cellSize == 0f) return
+        if (fieldRect.width() <= 0) return
+        if (fieldRect.height() <= 0) return
+
+        if (canvas != null) {
+            drawGrid(canvas)
+        }
+        if (canvas != null) {
+            drawCells(canvas)
+        }
+
+    }
+
+    private fun drawGrid(canvas: Canvas) {
+
+    }
+
+    private fun drawCells(canvas: Canvas) {
+
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
