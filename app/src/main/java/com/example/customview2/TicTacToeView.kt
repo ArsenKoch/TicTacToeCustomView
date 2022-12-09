@@ -27,11 +27,13 @@ class TicTacToeView(
     private var playerColor2 by Delegates.notNull<Int>()
     private var gridColor by Delegates.notNull<Int>()
 
+    private var cellRect = RectF()
+
     private lateinit var player1Paint: Paint
     private lateinit var player2Paint: Paint
     private lateinit var gridPaint: Paint
 
-    private var ticTacToeField: TicTacToeField? = null
+    var ticTacToeField: TicTacToeField? = null
         set(value) {
             field?.listeners?.remove(listener)
             field = value
@@ -151,66 +153,100 @@ class TicTacToeView(
         }
     }
 
-        private fun drawCells(canvas: Canvas) {
-
-        }
-
-        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-            val minWidth = suggestedMinimumWidth + paddingLeft + paddingRight
-            val minHeight = suggestedMinimumHeight + paddingBottom + paddingTop
-
-            val desiredCellSizeInPixels = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                DESIRED_CELL_SIZE, resources.displayMetrics
-            ).toInt()
-
-            val rows = ticTacToeField?.rows ?: 0
-            val columns = ticTacToeField?.columns ?: 0
-
-            val desiredWidth =
-                max(minWidth, columns * desiredCellSizeInPixels + paddingRight + paddingLeft)
-            val desiredHeight =
-                max(minHeight, rows * desiredCellSizeInPixels + paddingTop + paddingBottom)
-
-            setMeasuredDimension(
-                resolveSize(desiredWidth, widthMeasureSpec),
-                resolveSize(desiredHeight, heightMeasureSpec)
-            )
-        }
-
-        private fun updateViewSize() {
-            val field = this.ticTacToeField ?: return
-
-            val safeWidth = width - paddingLeft - paddingRight
-            val safeHeight = height - paddingTop - paddingBottom
-
-            val cellWidth = safeWidth / field.columns.toFloat()
-            val cellHeight = safeHeight / field.rows.toFloat()
-
-            cellSize = min(cellWidth, cellHeight)
-            cellPadding = cellSize * 0.2f
-
-            val fieldWidth = cellSize * field.columns
-            val fieldHeight = cellSize * field.rows
-
-            fieldRect.left = paddingLeft + (safeWidth - fieldWidth) / 2
-            fieldRect.top = paddingTop + (safeHeight - fieldHeight) / 2
-            fieldRect.bottom = fieldRect.top + fieldHeight
-            fieldRect.right = fieldRect.left + fieldWidth
-        }
-
-        private fun initDefaultColors() {
-            playerColor1 = PLAYER1_DEFAULT_COLOR
-            playerColor2 = PLAYER2_DEFAULT_COLOR
-            gridColor = GRID_DEFAULT_COLOR
-        }
-
-        companion object {
-            const val PLAYER1_DEFAULT_COLOR = Color.RED
-            const val PLAYER2_DEFAULT_COLOR = Color.BLUE
-            const val GRID_DEFAULT_COLOR = Color.GRAY
-
-            const val DESIRED_CELL_SIZE = 50f
+    private fun drawCells(canvas: Canvas) {
+        val field = this.ticTacToeField ?: return
+        for (rows in 0 until field.rows) {
+            for (columns in 0 until field.columns) {
+                val cell = field.getCell(rows, columns)
+                if (cell == Cell.PLAYER_1) {
+                    drawPlayer1(canvas, rows, columns)
+                } else if (cell == Cell.PLAYER_2) {
+                    drawPlayer2(canvas, rows, columns)
+                }
+            }
         }
     }
+
+    private fun drawPlayer1(canvas: Canvas, row: Int, column: Int) {
+        val cellRect = getCellRect(row, column)
+        canvas.drawLine(cellRect.left, cellRect.top, cellRect.right, cellRect.bottom, player1Paint)
+        canvas.drawLine(cellRect.right, cellRect.top, cellRect.left, cellRect.bottom, player1Paint)
+    }
+
+    private fun drawPlayer2(canvas: Canvas, row: Int, columns: Int) {
+        val cellRect = getCellRect(row, columns)
+        canvas.drawCircle(
+            cellRect.centerX(),
+            cellRect.centerY(),
+            cellRect.width() / 2,
+            player2Paint
+        )
+    }
+
+    private fun getCellRect(row: Int, column: Int): RectF {
+        cellRect.left = fieldRect.left + column * cellSize + cellPadding
+        cellRect.top = fieldRect.top + row * cellSize + cellPadding
+        cellRect.right = fieldRect.left - column - cellPadding * 2
+        cellRect.bottom = fieldRect.top - row - cellPadding * 2
+        return cellRect
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val minWidth = suggestedMinimumWidth + paddingLeft + paddingRight
+        val minHeight = suggestedMinimumHeight + paddingBottom + paddingTop
+
+        val desiredCellSizeInPixels = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            DESIRED_CELL_SIZE, resources.displayMetrics
+        ).toInt()
+
+        val rows = ticTacToeField?.rows ?: 0
+        val columns = ticTacToeField?.columns ?: 0
+
+        val desiredWidth =
+            max(minWidth, columns * desiredCellSizeInPixels + paddingRight + paddingLeft)
+        val desiredHeight =
+            max(minHeight, rows * desiredCellSizeInPixels + paddingTop + paddingBottom)
+
+        setMeasuredDimension(
+            resolveSize(desiredWidth, widthMeasureSpec),
+            resolveSize(desiredHeight, heightMeasureSpec)
+        )
+    }
+
+    private fun updateViewSize() {
+        val field = this.ticTacToeField ?: return
+
+        val safeWidth = width - paddingLeft - paddingRight
+        val safeHeight = height - paddingTop - paddingBottom
+
+        val cellWidth = safeWidth / field.columns.toFloat()
+        val cellHeight = safeHeight / field.rows.toFloat()
+
+        cellSize = min(cellWidth, cellHeight)
+        cellPadding = cellSize * 0.2f
+
+        val fieldWidth = cellSize * field.columns
+        val fieldHeight = cellSize * field.rows
+
+        fieldRect.left = paddingLeft + (safeWidth - fieldWidth) / 2
+        fieldRect.top = paddingTop + (safeHeight - fieldHeight) / 2
+        fieldRect.bottom = fieldRect.top + fieldHeight
+        fieldRect.right = fieldRect.left + fieldWidth
+    }
+
+    private fun initDefaultColors() {
+        playerColor1 = PLAYER1_DEFAULT_COLOR
+        playerColor2 = PLAYER2_DEFAULT_COLOR
+        gridColor = GRID_DEFAULT_COLOR
+    }
+
+    companion object {
+        const val PLAYER1_DEFAULT_COLOR = Color.RED
+        const val PLAYER2_DEFAULT_COLOR = Color.BLUE
+        const val GRID_DEFAULT_COLOR = Color.GRAY
+
+        const val DESIRED_CELL_SIZE = 50f
+    }
+}
 

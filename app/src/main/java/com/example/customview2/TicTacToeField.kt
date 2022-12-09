@@ -1,6 +1,5 @@
 package com.example.customview2
 
-
 enum class Cell {
     PLAYER_1,
     PLAYER_2,
@@ -18,7 +17,7 @@ class TicTacToeField(
 
     val listeners = mutableSetOf<OnFieldChangedListener>()
 
-    private fun getCell(rows: Int, columns: Int): Cell {
+    fun getCell(rows: Int, columns: Int): Cell {
         if (rows < 0 || columns < 0 || rows >= rows || columns >= columns) return Cell.EMPTY
         return cells[rows][columns]
     }
@@ -27,7 +26,7 @@ class TicTacToeField(
         if (rows < 0 || columns < 0 || rows >= rows || columns >= columns) return
         if (getCell(rows, columns) != cell) {
             cells[rows][columns]
-            listeners.forEach { it.invoke(this) }
+            listeners.forEach { it?.invoke(this) }
         }
     }
 }
