@@ -25,8 +25,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.ticTacToeView.field = TicTacToeField(10, 10)
-        binding.btnRandom.setOnClickListener {
-        }
+        binding.ticTacToeView.field = TicTacToeField(3, 3)
     }
 }

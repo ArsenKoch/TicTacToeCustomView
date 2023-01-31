@@ -390,29 +390,15 @@ class TicTacToeView(
         invalidate()
     }
 
-    class SavedState : BaseSavedState {
+    class SavedState(superState: Parcelable) : BaseSavedState(superState) {
 
         var currentRow by Delegates.notNull<Int>()
         var currentColumn by Delegates.notNull<Int>()
-
-        constructor(superState: Parcelable) : super(superState)
-        constructor(parcel: Parcel) : super(parcel) {
-            currentRow = parcel.readInt()
-            currentColumn = parcel.readInt()
-        }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
             out.writeInt(currentRow)
             out.writeInt(currentColumn)
-        }
-
-        companion object {
-            @JvmField
-            val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
-                override fun createFromParcel(source: Parcel): SavedState = SavedState(source)
-                override fun newArray(size: Int): Array<SavedState?> = Array(size) { null }
-            }
         }
     }
 
